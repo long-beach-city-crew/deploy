@@ -1,10 +1,31 @@
 name: "Deploy"
 description: "Deploy to proxmox"
 
+inputs:
+  api_host:
+    required: true
+  api_key:
+    required: true
+
 runs:
-  using: "composite"
+  using: composite
   steps:
-    - name: Show info
+    - name: Info
       shell: bash
+      env:
+        API_KEY: ${{ inputs.api_key }}
+        API_HOST: ${{ inputs.api_host }}
       run: |
-        echo "Repo: ${{ github.repository }}"
+        echo "REPO: ${{ github.repository }}"
+        echo "HOST: ${API_HOST}"
+        echo "KEY: ${API_KEY}"
+
+    - name: Trigger deploy
+      shell: bash
+      env:
+        API_KEY: ${{ inputs.api_key }}
+        API_HOST: ${{ inputs.api_host }}
+      run: |
+        curl -fsS -X POST "${API_HOST}" \
+          -H "X-API-Key: ${API_KEY}" \
+          -d "{\"repo\":\"${{ github.repository }}\"}"
