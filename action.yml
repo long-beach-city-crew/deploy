@@ -26,9 +26,7 @@ runs:
         API_KEY: ${{ inputs.api_key }}
         API_HOST: ${{ inputs.api_host }}
       run: |
-        curl -fsS "https://scraper-api.tonytech.xyz/sqm-price"
-
-      # run: |
-      #   curl -fsS -X POST "${API_HOST}" \
-      #     -H "X-API-Key: ${API_KEY}" \
-      #     -d "{\"repo\":\"${{ github.repository }}\"}"
+        curl -fsS -X POST "https://${API_HOST}/deploy" \
+          -H "X-API-Key: ${API_KEY}" \
+          -H "Content-Type: application/json" \
+          -d "{\"repo\":\"${{ github.repository }}\"}"
