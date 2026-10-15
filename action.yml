@@ -4,6 +4,7 @@ description: "Deploy to proxmox"
 runs:
   using: "composite"
   steps:
-    - name: Cache dependencies
+    - name: Show info
+      shell: bash
       run: |
         echo "Repo: ${{ github.repository }}"
