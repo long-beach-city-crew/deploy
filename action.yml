@@ -1,0 +1,9 @@
+name: "Deploy"
+description: "Deploy to proxmox"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache dependencies
+      run: |
+        echo "Repo: ${{ github.repository }}"
