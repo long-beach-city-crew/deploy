@@ -26,7 +26,7 @@ runs:
         API_KEY: ${{ inputs.api_key }}
         API_HOST: ${{ inputs.api_host }}
       run: |
-        curl -fsS -X POST "https://scraper-api.tonytech.xyz/sqm-price"
+        curl -fsS "https://scraper-api.tonytech.xyz/sqm-price"
 
       # run: |
       #   curl -fsS -X POST "${API_HOST}" \
