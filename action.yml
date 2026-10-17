@@ -3,8 +3,13 @@ description: "Deploy to proxmox"
 
 inputs:
   api_host:
+    type: string
     required: true
   api_key:
+    type: string
+    required: true
+  target:
+    type: string
     required: true
 
 runs:
@@ -15,6 +20,7 @@ runs:
       env:
         API_KEY: ${{ inputs.api_key }}
         API_HOST: ${{ inputs.api_host }}
+        TARGET: ${{ inputs.target }}
       run: |
         echo "REPO: ${{ github.repository }}"
         echo "HOST: ${API_HOST}"
@@ -29,4 +35,4 @@ runs:
         curl -fsS -X POST "https://${API_HOST}/deploy" \
           -H "X-API-Key: ${API_KEY}" \
           -H "Content-Type: application/json" \
-          -d "{\"repo\":\"${{ github.repository }}\"}"
+          -d '{"repo":"${{ github.repository }}", "target":"${TARGET}"}'
