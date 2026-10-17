@@ -15,29 +15,25 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Info
+    - name: Prepare payload
+      id: payload
       shell: bash
       env:
-        API_KEY: ${{ inputs.api_key }}
-        API_HOST: ${{ inputs.api_host }}
         TARGET: ${{ inputs.target }}
+        REPO: ${{ github.repository }}
       run: |
-        echo "REPO: ${{ github.repository }}"
-        echo "HOST: ${API_HOST}"
-        echo "KEY: ${API_KEY}"
+        payload=$(jq -nc --arg repo "$REPO" --arg target "$TARGET" \
+          '{repo: $repo, target: $target}')
+        echo "json=${payload}" >> "$GITHUB_OUTPUT"
 
     - name: Trigger deploy
       shell: bash
       env:
         API_KEY: ${{ inputs.api_key }}
         API_HOST: ${{ inputs.api_host }}
-        TARGET: ${{ inputs.target }}
-        REPO: ${{ github.repository }}
+        PAYLOAD: ${{ steps.payload.outputs.json }}
       run: |
-        payload=$(jq -n --arg repo "$REPO" --arg target "$TARGET" \
-          '{repo: $repo, target: $target}')
-
         curl --silent --show-error --fail-with-body -X POST "https://${API_HOST}/deploy" \
           -H "X-API-Key: ${API_KEY}" \
           -H "Content-Type: application/json" \
-          -d "$payload"
+          -d "${PAYLOAD}"
