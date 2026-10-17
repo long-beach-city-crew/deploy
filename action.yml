@@ -32,8 +32,12 @@ runs:
         API_KEY: ${{ inputs.api_key }}
         API_HOST: ${{ inputs.api_host }}
         TARGET: ${{ inputs.target }}
+        REPO: ${{ github.repository }}
       run: |
+        payload=$(jq -n --arg repo "$REPO" --arg target "$TARGET" \
+          '{repo: $repo, target: $target}')
+
         curl --silent --show-error --fail-with-body -X POST "https://${API_HOST}/deploy" \
           -H "X-API-Key: ${API_KEY}" \
           -H "Content-Type: application/json" \
-          -d '{"repo":"${{ github.repository }}", "target":"${TARGET}"}'
+          -d "$payload"
