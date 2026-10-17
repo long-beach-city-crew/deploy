@@ -33,7 +33,6 @@ runs:
         API_HOST: ${{ inputs.api_host }}
         TARGET: ${{ inputs.target }}
       run: |
-        # curl -fsS -X POST "https://${API_HOST}/deploy" \
         curl --silent --show-error --fail-with-body -X POST "https://${API_HOST}/deploy" \
           -H "X-API-Key: ${API_KEY}" \
           -H "Content-Type: application/json" \
