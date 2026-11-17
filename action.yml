@@ -11,6 +11,13 @@ inputs:
   target:
     type: string
     required: true
+outputs:
+  api_status:
+    description: "Status"
+    value: ${{ steps.deploy.outputs.api_status }}
+  deploy_status:
+    description: "Status"
+    value: ${{ steps.deploy.outputs.deploy_status }}
 
 runs:
   using: composite
@@ -27,13 +34,23 @@ runs:
         echo "json=${payload}" >> "$GITHUB_OUTPUT"
 
     - name: Trigger deploy
+      id: deploy
       shell: bash
       env:
         API_KEY: ${{ inputs.api_key }}
         API_HOST: ${{ inputs.api_host }}
         PAYLOAD: ${{ steps.payload.outputs.json }}
       run: |
-        curl --silent --show-error --fail-with-body -X POST "https://${API_HOST}/deploy" \
+        result=$(curl --silent --show-error --fail-with-body --max-time 600 \
+          -X POST "https://${API_HOST}/deploy" \
           -H "X-API-Key: ${API_KEY}" \
           -H "Content-Type: application/json" \
-          -d "${PAYLOAD}"
+          -d "${PAYLOAD}") || { echo "::error::Request failed (network/timeout)"; exit 1; }
+
+        api_status=$(echo $result | jq -r '.details.api_status')
+        deploy_status=$(echo $result | jq -r '.details.deploy_status')
+
+        {
+          echo "api_status=${api_status}"
+          echo "deploy_status=${deploy_status}"
+        } >> "$GITHUB_OUTPUT"
