@@ -13,10 +13,10 @@ inputs:
     required: true
 outputs:
   api_status:
-    description: "Status"
+    description: "API status"
     value: ${{ steps.deploy.outputs.api_status }}
   deploy_status:
-    description: "Status"
+    description: "Deploy status"
     value: ${{ steps.deploy.outputs.deploy_status }}
 
 runs:
