@@ -50,6 +50,9 @@ runs:
         api_status=$(echo $result | jq -r '.details.api_status')
         deploy_status=$(echo $result | jq -r '.details.deploy_status')
 
+        echo $api_status
+        echo $deploy_status
+
         {
           echo "api_status=${api_status}"
           echo "deploy_status=${deploy_status}"
