@@ -47,8 +47,8 @@ runs:
           -H "Content-Type: application/json" \
           -d "${PAYLOAD}") || { echo "::error::Request failed (network/timeout)"; exit 1; }
 
-        api_status=$(echo $result | jq -r '.details.api_status')
-        deploy_status=$(echo $result | jq -r '.details.deploy_status')
+        api_status=$(jq -r '.detail.api_status // "unknown"' <<<"$result")
+        deploy_status=$(jq -r '.detail.deploy_status // "unknown"' <<<"$result")
 
         echo $api_status
         echo $deploy_status
